@@ -1,14 +1,17 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
+app.use(cors());
 app.use(express.json());
 
 app.post("/api/sendmail", async (request, response, next) => {
   try {
     const names = request.body.names;
+    console.log(request.body);
     //   const names = [
     //     {
     //       email: "tothpeter1216@gmail.com",
@@ -29,6 +32,7 @@ app.post("/api/sendmail", async (request, response, next) => {
     });
     response.json({ message: "it works" });
   } catch (error) {
+    console.log(error);
     response.status(500).json(error);
   }
 });
