@@ -22,6 +22,7 @@ app.post("/api/sendmail", async (request, response, next) => {
           "***\n\nBoldog karácsonyt! :)"
       );
     });
+    console.log("it works");
     response.json({ message: "it works" });
   } catch (error) {
     console.log(error);
