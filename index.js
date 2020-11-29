@@ -11,23 +11,13 @@ app.use(express.json());
 app.post("/api/sendmail", async (request, response, next) => {
   try {
     const names = request.body.names;
-    console.log(request.body);
-    //   const names = [
-    //     {
-    //       email: "tothpeter1216@gmail.com",
-    //       giftTo: "Mozart",
-    //     },
-    //     {
-    //       email: "7peregrin@gmail.com",
-    //       giftTo: "Beethoven",
-    //     },
-    //   ];
+
     names.map((name) => {
       sendMail(
         name.email,
-        "Szia!\nEzt a levelet azért kaptad, mert valakinek a szervezésében részt vettél egy karácsonyi ajándékozós párosítás sorsolásában.\nValaki a te nevedet is 'kihúzta', de ami most fontosabb, neked is készülnöd kell egy ajándékkal. A következő személyt kell meglepned: " +
+        "Szia!\nEzt a levelet azért kaptad, mert részt vettél egy karácsonyi ajándékozás sorsolásában.\nValaki a te nevedet is 'kihúzta', de ami most fontosabb, neked is készülnöd kell egy ajándékkal. \nA következő személyt kell meglepned: ***" +
           name.giftTo +
-          "     \n\nBoldog karácsonyt! :)"
+          "***\n\nBoldog karácsonyt! :)"
       );
     });
     response.json({ message: "it works" });
