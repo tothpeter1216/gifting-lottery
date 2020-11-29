@@ -3,10 +3,15 @@ const app = express();
 const cors = require("cors");
 
 const nodemailer = require("nodemailer");
+const { request, response } = require("express");
 require("dotenv").config();
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/", (request, response) => {
+  response.json({ message: "works" });
+});
 
 app.post("/api/sendmail", async (request, response, next) => {
   try {
