@@ -3,11 +3,24 @@ const app = express();
 const cors = require("cors");
 
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
 require("dotenv").config();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static("build"));
+
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+
+const oAuth2Client = new google.auth.OAuth2(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URI
+);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 app.post("/api/sendmail", async (request, response, next) => {
   try {
@@ -29,29 +42,41 @@ app.post("/api/sendmail", async (request, response, next) => {
   }
 });
 
-const sendMail = (email, text) => {
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.USER,
-      pass: process.env.PASS,
-    },
-  });
+const sendMail = async (email, text) => {
+  try {
+    const accessToken = await oAuth2Client.getAccessToken();
 
-  var mailOptions = {
-    from: "codetheworlds@gmail.com",
-    to: email,
-    subject: "karácsony",
-    text: text,
-  };
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        // user: process.env.USER,
+        // pass: process.env.PASS,
+        type: "OAuth2",
+        user: "codemyworlds@gmail.com",
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        refreshToken: REFRESH_TOKEN,
+        accessToken: accessToken,
+      },
+    });
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
+    var mailOptions = {
+      from: "a Mikulás <codemyworlds@gmail.com>",
+      to: email,
+      subject: "karácsony",
+      text: text,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+  } catch (error) {
+    return error;
+  }
 };
 
 app.listen(process.env.PORT, () => {
