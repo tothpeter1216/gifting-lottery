@@ -17,10 +17,10 @@ const REDIRECT_URI = process.env.REDIRECT_URI
 const USER = process.env.USER
 const PASS = process.env.PASS
 
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN
+// const REFRESH_TOKEN = process.env.REFRESH_TOKEN
 
-const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN })
+// const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+// oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN })
 
 app.post("/api/sendmail", async (request, response, next) => {
     try {
@@ -44,7 +44,7 @@ app.post("/api/sendmail", async (request, response, next) => {
 
 const sendMail = async (email, text) => {
     try {
-        const accessToken = await oAuth2Client.getAccessToken()
+        // const accessToken = await oAuth2Client.getAccessToken()
 
         var transporter = nodemailer.createTransport({
             service: "gmail",
@@ -75,6 +75,7 @@ const sendMail = async (email, text) => {
             }
         })
     } catch (error) {
+      console.log("ERR", error)
         return error
     }
 }
